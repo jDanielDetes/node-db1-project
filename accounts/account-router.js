@@ -28,6 +28,38 @@ getById(req.params.id)
 })
 })
 
+
+router.post("/",(req,res)=>{
+
+    db("accounts")
+    .insert(req.body,"id")
+    .then(ids =>{
+        return getById(ids[0]).then(inserted =>{
+            res.status(201).json(inserted)
+        })
+    })
+    .catch(error =>{
+        console.log(error)
+        res.status(500).json({error:"failed to add the accounts"})
+    })
+})
+
+router.put("/id",(req,res) =>{
+    const id= req.params.id
+    const changes = req.body
+    db("accounts")
+    .where({id})
+    .update(changes)
+    .then(count =>{
+        res.status(200).json(count)
+    })
+    .catch(error =>{
+        console.log(error)
+        res.status(500).json({error:"failed to update the post "})
+    })
+})
+
+
 module.exports = router;
 
 function getById(id) {
